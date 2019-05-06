@@ -1,0 +1,13 @@
+max-width="400px" width="100%" height="auto"
+
+.displayed-image {
+	max-width: 400px;
+	width: 100%;
+	height: auto;
+}
+
+.bounding-box {
+	position: absolute;
+	cursor: pointer;
+	box-shadow: inset 0 0 0 3px #149df2;
+}

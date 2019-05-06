@@ -1,4 +1,18 @@
-img {
+.logo-image {
 	width: 100px;
 	height: 100px;
+}
+
+.Tilt {
+	border-radius: .25rem;
+	box-shadow: 0px 0px 8px 2px rgba( 0, 0, 0, 0.2 );
+	background-image: linear-gradient(89deg, #FF5EDF 0%, #04C8DE 100%);
+}
+
+.Tilt-inner {
+	padding: 1.6rem;
+}
+
+.logo-wrapper {
+	margin: 2rem;
 }

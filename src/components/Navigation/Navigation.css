@@ -3,5 +3,23 @@
 }
 
 .button {
-	
+	display: flex;
+	justify-content: flex-end;
+	font-size: 1.5rem;
+	opacity: 1;
+  	transition: opacity .15s ease-in;
+  	text-decoration: underline;
+  	color: black;
+  	cursor: pointer;
+
+}
+
+.button:hover,
+.button:focus {
+  opacity: .5;
+  transition: opacity .15s ease-in;
+}
+.button:active {
+  opacity: .8; 
+  transition: opacity .15s ease-out;
 }

@@ -1,0 +1,231 @@
+/* nu uitati de border box. daca elementul vostru are dimensiuni fixe (ex: with: 400px, height: 400px)
+atunci padding-ul si border-ul nu vor creste dimensiunile lui, ci se vor adauga in interiorul elementului */
+* {
+	box-sizing: border-box;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	/* unele browsere au margin si padding predefinit si ne-ar putea incurca */
+	margin: 0;
+	padding: 0;
+	/* font luat de pe google fonts, nu uitati sa il includeti in html, cu tag-ul link! */
+	font-family: 'Roboto', sans-serif;
+	/* daca vrem imagine de fundal, cu metoda url dam link-ul catre imaginea respectiva */
+	/* cover inseamna ca imaginea va ocupa fundalul intregului element (aici body)*/
+	background-image: url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80');
+	background-size: cover;
+}
+
+/* HEADER-UL*/
+
+header {
+	/* display flex pentru a aranja elemente intr-un container */
+	/* row nowrap => elementele asezate pe orizontala, daca e prea putin spatiu NU trec pe randul urmator*/
+	display: flex;
+	flex-flow: row nowrap;
+	/* align-items centreaza elementele pe verticala */
+	align-items: center;
+	/* nu am apucat sa va zic la curs: 100vh => ocupa toata inaltimea ferestrei in care vedem continutul 
+	site-ului; 100vw => ocupa toata latimea ferestrei in care vedem continutul site-ului */
+	/* deci 10 vh e 10%, aduceti-mi aminte sa va arat data viitoare!!*/
+	min-height: 10vh;
+	background-color: white;
+}
+
+/* LOGO-UL */
+
+header h1 {
+	/* font google maps */
+	font-family: 'Indie Flower', cursive;
+	/* cu font-size specificati dimensiunea textului */
+	/* rem si em sunt unitati relative si ajuta ca pagina sa fie responsive (sa se vada ok si pe mobil/tableta/..) */
+	/* daca vreti mai multe detalii: 
+	https://zellwk.com/blog/rem-vs-em/
+	; */
+	font-size: 3rem;
+	margin: 0.5em 0.2em;
+}
+
+/* IMAGINEA DIN HEADER */
+
+header .image-wrapper {
+	display: flex;
+	/* justify content positioneaza alementele pe orizontala */
+	justify-content: center;
+	align-items: center;
+}
+
+header .image-wrapper img {
+	/* transition spune in felul urmator: pentru proprietatile elementului selectat(img-ul) care se MODIFICA,
+	fa modificarea respectiva in 2 secunde; */
+	transition: all 2s;
+	/* cu width si height setam latimea, respectiv inaltimea*/
+	width: 100px;
+	height: 100px;
+}
+
+/* la hover(tinerea mouse-ului deasupra elementului) se MODIFICA imgainea;
+se va roti cu 360 de grade, in 2secunde, din causa transitionului de mai sus!! */
+header .image-wrapper img:hover {
+	transform: rotate(360deg);
+}
+
+/* SEARCH BAR-ul */
+
+header .search-wrapper {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+header .search-wrapper input{
+	font-size: 1.2rem;
+	padding: 1em;
+	/* borderul e compus din 3 proprietati: tipul, grosimea si culoarea; */
+	border: solid 2px black;
+	/* cu border radius rotunjesti colturile */
+	border-radius: 20px;
+	color: blue;
+}
+
+/* daca vrem sa stilizam doar placeholderul, folosim selectorul ::placeholder; */
+header .search-wrapper input::placeholder {
+	color: pink;
+}
+
+/* media querries-urile sunt folosite pentru ca site-ul nostru sa arate ok si pe mobil/tableta/... */
+/* va las aici un link care detaliaza tipurile de device-uri pentru care putem folosi media queries-uri
+https://css-tricks.com/snippets/css/media-queries-for-standard-devices/
+*/
+@media screen and (max-device-width: 480px) and (orientation:portrait) {
+	/* ATENTIE! media queries-urile se pun DUPA ce am definit proprietatile principale de CSS
+	ele suprascriu proprietatile de dinainte, pentru device-ul corespunzator(aici e vorba de un telefon
+	cu 480px pe latime la orientare portrait) */
+	header h1 {
+		font-size: 6rem;
+	}
+} 
+
+/* NAVBAR-UL*/
+
+nav ul{
+	/* pentru a scapa de bulinele din lista */
+	list-style-type: none;
+	display: flex;
+	padding: 0;
+	margin: 0;
+	display: row nowrap;
+	/* space around adauga spatiere intre elemente */
+	justify-content: space-around;
+}
+
+nav li {
+	font-size: 1.6rem;
+	padding: 1em;
+	background-color: blue;
+	/* avem 4 elemenete in navbar, deci vrem fiecare sa ocupe 25% din latime */
+	width: 25%;
+	text-align: center;
+}
+
+nav a{
+	/* pentru a nu mai fi link-urile subliniate */
+	text-decoration: none;
+	/* ATENTIE! cand avem link-uri trebuie sa le schimbam direct lor culoarea! daca schimbam
+	culoarea la tag-ul li care continea un a href, nu mergea! */
+	color: white;
+}
+
+nav li:hover {
+	background-color: grey;
+}
+
+/* MAIN-UL */
+
+main {
+	/* adaugam margin si padding procentual, ca sa arate mai bine si sa fie responsive */
+	/* daca la margin sunt specificate 2 valori: 
+	prima este valoare pentru margin top si margin bottom
+	a doua este valoarea pentru margin left si margin right */
+	margin: 5% 10%;
+	padding: 5% 10%;
+	background-color: white;
+}
+
+/* am mai adaugat o imagine pe care am exemplificat scalarea la hover */
+
+main img {
+	transition: 1s;
+}
+
+main img:hover {
+	transform: scale(1.1);
+}
+
+main h2 {
+	font-size: 1.8rem;
+}
+
+main p {
+	font-size: 1.4rem;
+}
+
+/* rulati html-ul ititila asa */
+/* dupa modificati valoarea display-ului in "block"
+v-a aparut ceva nou, nu? 
+diplay: none inseamna ca elementul nu e afisat in pagina; */
+.mocking {
+	display: none;
+}
+
+/* FOOTER-UL*/
+
+footer {
+	/* grid: trebuie sa facem impartire pe coloane si pe linii*/
+	display: grid;
+	/* 12 coloane egale ca dimensiune */
+	grid-template-columns: repeat(12, 1fr);
+	/* 4 lnii egale ca dimensiune */
+	grid-template-rows: repeat(4, 1fr);
+}
+
+footer {
+	background-color: white;
+}
+
+footer img {
+	width: 20px;
+	height: 20px;
+
+}
+
+footer .contact {
+	display: flex;
+	flex-flow: column nowrap;
+	/* daca avem 4 randuri, primul e de la pozitia 1 la pozitia 2, iar ultimul incepe 
+	la pozitia 4 si se termina la pozitia 5 */
+	/* analog si la coloane */
+	/* contact-ul e plasat de pozitia 1 la pozitia 4, in ceea ce priveste impartirea pe randuri*/
+	/* adica la grid row, in stanga /-ului e pozitia de inceput, iar in drepata pozitia de sfarsit*/
+	/* practic, va ocupa 3/4 din inaltimea footerului (height-ul)*/
+	grid-row: 1 / 4;
+	/* pentru coloane, analog, de la pozitia 2, pana la pozitia 6 */
+	/* pozitiile pe coloane incep la 1 si se termina la 13, asadar contactul va fi in partea
+	dreapta stanga a contactului */
+	grid-column: 2 / 6;
+}
+
+footer .social-media {
+	display: flex;
+	flex-flow: column nowrap;
+	grid-row: 1 / 4;
+	grid-column: 8/ 12;
+}
+
+footer #copyright {
+	text-align: center;
+	grid-row: 4 / 5;
+	grid-column: 4 / 10;
+}
