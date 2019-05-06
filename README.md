@@ -1,2 +1,2 @@
 # smart-brain-app
-Full stack JavaScript app, done with React, Node and using Clarify API.
+Full stack JavaScript app, done with React.js, Node.js, PostgreSQL and using Clarify API.
