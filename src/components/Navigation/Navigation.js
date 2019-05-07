@@ -1,9 +1,19 @@
 import React from 'react';
 import './Navigation.css'
 
-const Navigation = () => {
+const Navigation = ({onRouteChange, currentRoute}) => {
 	return(
-		<p className="button">Sign out</p>
+		<div>
+			{currentRoute === 'home' ?
+			<div style={{display: 'flex', justifyContent: 'flex-end'}}>
+				<p className="button" onClick={()=>onRouteChange('signin')}>Sign out</p>
+			</div> :
+			<div style={{display: 'flex', justifyContent: 'flex-end'}}>
+				<p className="button" onClick={()=>onRouteChange('signin')}>Sign in</p>
+				<p className="button" onClick={()=>onRouteChange('register')}>Register</p>
+			</div>
+			}
+		</div>
 	)
 }
 

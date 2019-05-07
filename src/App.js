@@ -5,6 +5,8 @@ import Logo from './components/Logo/Logo.js';
 import Rank from './components/Rank/Rank.js';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
 import FaceRecognitionImage from './components/FaceRecognitionImage/FaceRecognitionImage.js';
+import Signin from './components/SignIn/SignIn.js'
+import Register from './components/Register/Register.js'
 import './App.css';
 
 const particlesParams = {
@@ -38,7 +40,20 @@ class App extends Component {
 				left: 0,
 				bottom: 0,
 				right: 0
-			}
+			},
+			route: 'signin'
+		}
+	}
+
+	onRouteChange = (route) => {
+		if ( route === 'signin') {
+			this.setState({route: 'signin'});
+		} else if (route === 'register') {
+			this.setState({route: 'register'});
+		} else if (route === 'home'){
+			this.setState({route: 'home'});
+		} else {
+			this.setState({route: '404'});
 		}
 	}
 
@@ -61,7 +76,7 @@ class App extends Component {
 				// we set the url state, so the render method is triggered
 				this.setState({url: this.state.imageInput, box: translatedCoordinatesObject});
 		    },
-		    function(err) {
+		    (err) => {
 		      // there was an error
 		      console.log(err);
 		    }
@@ -70,15 +85,26 @@ class App extends Component {
 
 	render() {
 		return (
-		  <div>
-		  	<Particles params={particlesParams} className="particles"/>
-		    <Navigation />
-		    <Logo />
-		    <Rank />
-		    <ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
-		  	{/* we pass the image url and the face recognition box coordinates */}
-		    <FaceRecognitionImage url={this.state.url} boxCoordinates={this.state.box}/>
-		  </div>
+			<div>
+				<Particles params={particlesParams} className="particles"/>
+				<Navigation onRouteChange={this.onRouteChange} currentRoute={this.state.route}/>
+				{
+				// if route is signin
+				this.state.route === 'signin' ?
+				<Signin onRouteChange={this.onRouteChange}/> :
+				// if route is register
+				this.state.route === 'register' ?
+				<Register onRouteChange={this.onRouteChange}/> :
+				// if route is home
+				<div>
+					<Logo />
+					<Rank />
+					<ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
+					{/* we pass the image url and the face recognition box coordinates */}
+					<FaceRecognitionImage url={this.state.url} boxCoordinates={this.state.box}/>
+				</div>
+				}
+			</div>
 		);
 	}
 }
