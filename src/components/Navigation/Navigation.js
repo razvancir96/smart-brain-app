@@ -6,11 +6,11 @@ const Navigation = ({onRouteChange, currentRoute}) => {
 		<div>
 			{currentRoute === 'home' ?
 			<div style={{display: 'flex', justifyContent: 'flex-end'}}>
-				<p className="button" onClick={()=>onRouteChange('signin')}>Sign out</p>
+				<p className="button f4" onClick={()=>onRouteChange('signin')}>Sign out</p>
 			</div> :
 			<div style={{display: 'flex', justifyContent: 'flex-end'}}>
-				<p className="button" onClick={()=>onRouteChange('signin')}>Sign in</p>
-				<p className="button" onClick={()=>onRouteChange('register')}>Register</p>
+				<p className="button f4" onClick={()=>onRouteChange('signin')}>Sign in</p>
+				<p className="button f4" onClick={()=>onRouteChange('register')}>Register</p>
 			</div>
 			}
 		</div>

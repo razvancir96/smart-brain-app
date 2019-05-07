@@ -23,3 +23,8 @@
   opacity: .8; 
   transition: opacity .15s ease-out;
 }
+
+p {
+  margin-left: 10px;
+  margin-right: 10px;
+}
