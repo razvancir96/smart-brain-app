@@ -5,7 +5,7 @@ import Logo from './components/Logo/Logo.js';
 import Rank from './components/Rank/Rank.js';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
 import FaceRecognitionImage from './components/FaceRecognitionImage/FaceRecognitionImage.js';
-import Signin from './components/SignIn/SignIn.js'
+import SignIn from './components/SignIn/SignIn.js'
 import Register from './components/Register/Register.js'
 import './App.css';
 
@@ -41,7 +41,12 @@ class App extends Component {
 				bottom: 0,
 				right: 0
 			},
-			route: 'signin'
+			route: 'signin',
+			userData: {
+				id: 0,
+				name: '',
+				entries: 0
+			}
 		}
 	}
 
@@ -57,14 +62,30 @@ class App extends Component {
 		}
 	}
 
+	getProfile = (id) => {
+		fetch(`http://localhost:3000/profile/${Number(id)}`)
+		.then(response => response.json())
+		.then(user => {
+			const currentUser = {
+				id: user.id,
+				name: user.name,
+				entries: user.entries
+			};
+			this.setState({userData: currentUser, url: ''});
+		})
+		.catch(err => {
+			console.log(err);
+		})
+	}
+
 	onInputChange = (event) => {
 		this.setState({imageInput: event.target.value});
 	}
 
 	onButtonClick = () => {
 		// when the submit button is clicked, we pass the url to Clarifai
-		app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageInput).then(
-		    (response) => {
+		app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageInput)
+		.then((response) => {
 				// do something with response
 				const coordinatesObject = response.outputs[0].data.regions[0].region_info.bounding_box;
 				const translatedCoordinatesObject = {
@@ -75,12 +96,45 @@ class App extends Component {
 				}
 				// we set the url state, so the render method is triggered
 				this.setState({url: this.state.imageInput, box: translatedCoordinatesObject});
-		    },
-		    (err) => {
-		      // there was an error
-		      console.log(err);
-		    }
-		);		
+				fetch('http://localhost:3000/image', {
+					method: 'PUT',
+					body: JSON.stringify({
+						id: this.state.userData.id
+					}),
+					headers: {
+						'Content-Type': 'application/json' 
+					}
+				})
+				.then(response => {
+					this.setState(prevState => ({
+						userData: {
+							...prevState.userData,
+							entries: prevState.userData.entries + 1
+						}
+					}))
+				})
+				.catch(err => {
+					// console.log(err);
+				})
+		},
+		(err) => {
+			// there was an error
+			this.setState({url: this.state.imageInput, box: {
+				top: 0,
+				left: 0,
+				bottom: 0,
+				right: 0
+			}});
+	    }
+		)
+		.catch(err => {
+			this.setState({url: this.state.imageInput, box: {
+				top: 0,
+				left: 0,
+				bottom: 0,
+				right: 0
+			}});
+		});		
 	}
 
 	render() {
@@ -91,14 +145,20 @@ class App extends Component {
 				{
 				// if route is signin
 				this.state.route === 'signin' ?
-				<Signin onRouteChange={this.onRouteChange}/> :
+				<SignIn onRouteChange={this.onRouteChange} getProfile={this.getProfile}/> :
 				// if route is register
 				this.state.route === 'register' ?
 				<Register onRouteChange={this.onRouteChange}/> :
 				// if route is home
 				<div>
 					<Logo />
-					<Rank />
+					{
+					this.state.userData.name ?
+					<Rank name={this.state.userData.name} entries={this.state.userData.entries}/> :
+					<div className="f4 ma2" style={{color: 'red', textAlign: 'center'}}>
+						You are not logged in. Please log in.
+					</div>
+					}
 					<ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
 					{/* we pass the image url and the face recognition box coordinates */}
 					<FaceRecognitionImage url={this.state.url} boxCoordinates={this.state.box}/>
