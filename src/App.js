@@ -36,7 +36,7 @@ class App extends Component {
 		this.state = {
 			imageInput: '',
 			url: '',
-			box: {},
+			box: [],
 			route: 'signin',
 			userData: {
 				id: 0,
@@ -83,51 +83,96 @@ class App extends Component {
 		// when the submit button is clicked, we pass the url to Clarifai
 		app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageInput)
 		.then((response) => {
-				// do something with response
-				const coordinatesObject = response.outputs[0].data.regions[0].region_info.bounding_box;
-				const translatedCoordinatesObject = {
-					top: coordinatesObject.top_row * 100 + '%',
-					left: coordinatesObject.left_col * 100 + '%',
-					bottom: 100 - coordinatesObject.bottom_row * 100 + '%',
-					right: 100 - coordinatesObject.right_col * 100 + '%'
-				}
-				// we set the url state, so the render method is triggered
-				this.setState({url: this.state.imageInput, box: translatedCoordinatesObject});
-				fetch('http://localhost:3000/image', {
-					method: 'PUT',
-					body: JSON.stringify({
-						id: this.state.userData.id
-					}),
-					headers: {
-						'Content-Type': 'application/json' 
-					}
-				})
-				.then(response => response.json())
-				.then(data => {
-					if (data === "success") {
-						this.setState({error: ''})
-						// update entries
-						this.setState(prevState => ({
-							userData: {
-								...prevState.userData,
-								entries: prevState.userData.entries + 1
-							}
-						}));
-					}
-				})
-				.catch(err => {
-					// insert fails
-				})
+				// we grab the regions of the faces
+				const facesArray = response.outputs[0].data.regions;
+				// before we display the faces we display the image
+				this.setState({url: this.state.imageInput});
+				// for each face region
+				let coordinatesObject;
+				let translatedCoordinatesObject;
+				facesArray.forEach(face => {
+					coordinatesObject = face.region_info.bounding_box;
+					translatedCoordinatesObject = {
+						top: coordinatesObject.top_row * 100 + '%',
+						left: coordinatesObject.left_col * 100 + '%',
+						bottom: 100 - coordinatesObject.bottom_row * 100 + '%',
+						right: 100 - coordinatesObject.right_col * 100 + '%'
+					};
+					// update the state for the face regions array
+					this.setState(prevState => ({
+						box: [...prevState.box, translatedCoordinatesObject]
+					}));
+					// increment number of entries
+					fetch('http://localhost:3000/image', {
+						method: 'PUT',
+						body: JSON.stringify({
+							id: this.state.userData.id
+						}),
+						headers: {
+							'Content-Type': 'application/json' 
+						}
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data === "success") {
+							this.setState({error: ''})
+							// update entries
+							this.setState(prevState => ({
+								userData: {
+									...prevState.userData,
+									entries: prevState.userData.entries + 1
+								}
+							}));
+						}
+					})
+					.catch(err => {
+						// insert fails
+					});
+				});
+				// const coordinatesObject = response.outputs[0].data.regions[0].region_info.bounding_box;
+				// const translatedCoordinatesObject = {
+				// 	top: coordinatesObject.top_row * 100 + '%',
+				// 	left: coordinatesObject.left_col * 100 + '%',
+				// 	bottom: 100 - coordinatesObject.bottom_row * 100 + '%',
+				// 	right: 100 - coordinatesObject.right_col * 100 + '%'
+				// }
+				// // we set the url state, so the render method is triggered
+				// this.setState({url: this.state.imageInput, box: translatedCoordinatesObject});
+				// fetch('http://localhost:3000/image', {
+				// 	method: 'PUT',
+				// 	body: JSON.stringify({
+				// 		id: this.state.userData.id
+				// 	}),
+				// 	headers: {
+				// 		'Content-Type': 'application/json' 
+				// 	}
+				// })
+				// .then(response => response.json())
+				// .then(data => {
+				// 	if (data === "success") {
+				// 		this.setState({error: ''})
+				// 		// update entries
+				// 		this.setState(prevState => ({
+				// 			userData: {
+				// 				...prevState.userData,
+				// 				entries: prevState.userData.entries + 1
+				// 			}
+				// 		}));
+				// 	}
+				// })
+				// .catch(err => {
+				// 	// insert fails
+				// })
 		},
 		(err) => {
 			// there was an error
-			this.setState({url: this.state.imageInput, box: {}});
+			this.setState({url: this.state.imageInput, box: []});
 			this.setState({error: 'badLink'});
 	    }
 		)
 		// image does not contain pictures
 		.catch(err => {
-			this.setState({url: this.state.imageInput, box: {}});
+			this.setState({url: this.state.imageInput, box: []});
 			this.setState({error: ''});
 		});		
 	}
