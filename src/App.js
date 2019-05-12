@@ -36,18 +36,14 @@ class App extends Component {
 		this.state = {
 			imageInput: '',
 			url: '',
-			box: {
-				// top: 0,
-				// left: 0,
-				// bottom: 0,
-				// right: 0
-			},
+			box: {},
 			route: 'signin',
 			userData: {
 				id: 0,
 				name: '',
 				entries: 0
-			}
+			},
+			error: ''
 		}
 	}
 
@@ -106,35 +102,33 @@ class App extends Component {
 						'Content-Type': 'application/json' 
 					}
 				})
-				.then(response => {
-					this.setState(prevState => ({
-						userData: {
-							...prevState.userData,
-							entries: prevState.userData.entries + 1
-						}
-					}))
+				.then(response => response.json())
+				.then(data => {
+					if (data === "success") {
+						this.setState({error: ''})
+						// update entries
+						this.setState(prevState => ({
+							userData: {
+								...prevState.userData,
+								entries: prevState.userData.entries + 1
+							}
+						}));
+					}
 				})
 				.catch(err => {
-					// console.log(err);
+					// insert fails
 				})
 		},
 		(err) => {
 			// there was an error
-			this.setState({url: this.state.imageInput, box: {
-				// top: 0,
-				// left: 0,
-				// bottom: 0,
-				// right: 0
-			}});
+			this.setState({url: this.state.imageInput, box: {}});
+			this.setState({error: 'badLink'});
 	    }
 		)
+		// image does not contain pictures
 		.catch(err => {
-			this.setState({url: this.state.imageInput, box: {
-				// top: 0,
-				// left: 0,
-				// bottom: 0,
-				// right: 0
-			}});
+			this.setState({url: this.state.imageInput, box: {}});
+			this.setState({error: ''});
 		});		
 	}
 
@@ -159,8 +153,11 @@ class App extends Component {
 					<DisplayError message={'You are not logged in. Please log in.'} />
 					}
 					<ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
-					{/* we pass the image url and the face recognition box coordinates */}
+					{
+					this.state.error === "badLink" ?
+					<DisplayError message={'You have not entered a valid url.'}/> :
 					<FaceRecognitionImage url={this.state.url} boxCoordinates={this.state.box}/>
+					}
 				</div>
 				}
 			</div>
