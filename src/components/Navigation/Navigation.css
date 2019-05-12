@@ -7,11 +7,10 @@
 	justify-content: flex-end;
 	font-size: 1.5rem;
 	opacity: 1;
-  	transition: opacity .15s ease-in;
-  	text-decoration: underline;
-  	color: black;
-  	cursor: pointer;
-
+	transition: opacity .15s ease-in;
+	text-decoration: underline;
+	color: black;
+	cursor: pointer;
 }
 
 .button:hover,

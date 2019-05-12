@@ -7,6 +7,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js';
 import FaceRecognitionImage from './components/FaceRecognitionImage/FaceRecognitionImage.js';
 import SignIn from './components/SignIn/SignIn.js'
 import Register from './components/Register/Register.js'
+import DisplayError from './components/DisplayError/DisplayError.js'
 import './App.css';
 
 const particlesParams = {
@@ -36,10 +37,10 @@ class App extends Component {
 			imageInput: '',
 			url: '',
 			box: {
-				top: 0,
-				left: 0,
-				bottom: 0,
-				right: 0
+				// top: 0,
+				// left: 0,
+				// bottom: 0,
+				// right: 0
 			},
 			route: 'signin',
 			userData: {
@@ -120,19 +121,19 @@ class App extends Component {
 		(err) => {
 			// there was an error
 			this.setState({url: this.state.imageInput, box: {
-				top: 0,
-				left: 0,
-				bottom: 0,
-				right: 0
+				// top: 0,
+				// left: 0,
+				// bottom: 0,
+				// right: 0
 			}});
 	    }
 		)
 		.catch(err => {
 			this.setState({url: this.state.imageInput, box: {
-				top: 0,
-				left: 0,
-				bottom: 0,
-				right: 0
+				// top: 0,
+				// left: 0,
+				// bottom: 0,
+				// right: 0
 			}});
 		});		
 	}
@@ -155,9 +156,7 @@ class App extends Component {
 					{
 					this.state.userData.name ?
 					<Rank name={this.state.userData.name} entries={this.state.userData.entries}/> :
-					<div className="f4 ma2" style={{color: 'red', textAlign: 'center'}}>
-						You are not logged in. Please log in.
-					</div>
+					<DisplayError message={'You are not logged in. Please log in.'} />
 					}
 					<ImageLinkForm inputChange={this.onInputChange} buttonClick={this.onButtonClick}/>
 					{/* we pass the image url and the face recognition box coordinates */}

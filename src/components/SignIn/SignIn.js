@@ -1,4 +1,5 @@
 import React from 'react';
+import DisplayError from '../DisplayError/DisplayError.js';
 import './SignIn.css';
 
 class SignIn extends React.Component {
@@ -84,10 +85,8 @@ class SignIn extends React.Component {
                     onClick={() => this.props.onRouteChange('register')}>Register</span>
               </div>
               {this.state.errorMessage ?
-              (<div className="f4 ma2" style={{color: 'red', textAlign: 'center'}}>
-                  Error logging in. Check username and password.
-              </div>) :
-              (<div></div>)
+              <DisplayError message={'Error signing in. Please check username and password.'} /> :
+              <div></div>
               }
             </form>
           </main>

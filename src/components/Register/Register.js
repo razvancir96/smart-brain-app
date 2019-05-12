@@ -1,4 +1,5 @@
 import React from 'react';
+import DisplayError from '../DisplayError/DisplayError.js';
 
 class Register extends React.Component{
   
@@ -96,9 +97,7 @@ class Register extends React.Component{
             </div>
             {
             this.state.errorMessage ?
-            <div className="f4 ma2" style={{color: 'red', textAlign: 'center'}}>
-              Error registering. Your email is already used, name is blank or password is too short.
-            </div> :
+            <DisplayError message={'Error registering. Your email is already used, name is blank or password is too short.'} /> :
             <div></div> 
             }
           </form>
