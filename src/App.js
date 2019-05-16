@@ -22,13 +22,6 @@ const particlesParams = {
 	}
 };
 
-// Clarifai API
-const Clarifai = require('clarifai');
-const app = new Clarifai.App({
-	apiKey: 'b5624aafd619411f8accfc04e257cd73'
-});
-
-
 class App extends Component {
 
 	constructor() {
@@ -68,7 +61,8 @@ class App extends Component {
 				name: user.name,
 				entries: user.entries
 			};
-			this.setState({userData: currentUser, url: ''});
+			// when a user gets his profile, images or errors have to be reset
+			this.setState({userData: currentUser, url: '', error: ''});
 		})
 		.catch(err => {
 			console.log(err);
@@ -80,9 +74,24 @@ class App extends Component {
 	}
 
 	onButtonClick = () => {
-		// when the submit button is clicked, we pass the url to Clarifai
-		app.models.predict("a403429f2ddf4b49b307e318f00e528b", this.state.imageInput)
+		// clarifai request
+		fetch('http://localhost:3000/apiRequest', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				imageUrl: this.state.imageInput
+			})
+		})
+		.then(response => response.json())
 		.then((response) => {
+			// if the url we entered does not exist
+			if (response === 'badLink') {
+				this.setState({url: '', box: []});
+				this.setState({error: 'badLink'});
+			// if we have faces
+			} else if (response.outputs[0].data.regions) {
 				// we grab the regions of the faces
 				const facesArray = response.outputs[0].data.regions;
 				// before we display the faces we display the image
@@ -126,55 +135,15 @@ class App extends Component {
 						}
 					})
 					.catch(err => {
-						// insert fails
+						// update fails
 					});
 				});
-				// const coordinatesObject = response.outputs[0].data.regions[0].region_info.bounding_box;
-				// const translatedCoordinatesObject = {
-				// 	top: coordinatesObject.top_row * 100 + '%',
-				// 	left: coordinatesObject.left_col * 100 + '%',
-				// 	bottom: 100 - coordinatesObject.bottom_row * 100 + '%',
-				// 	right: 100 - coordinatesObject.right_col * 100 + '%'
-				// }
-				// // we set the url state, so the render method is triggered
-				// this.setState({url: this.state.imageInput, box: translatedCoordinatesObject});
-				// fetch('http://localhost:3000/image', {
-				// 	method: 'PUT',
-				// 	body: JSON.stringify({
-				// 		id: this.state.userData.id
-				// 	}),
-				// 	headers: {
-				// 		'Content-Type': 'application/json' 
-				// 	}
-				// })
-				// .then(response => response.json())
-				// .then(data => {
-				// 	if (data === "success") {
-				// 		this.setState({error: ''})
-				// 		// update entries
-				// 		this.setState(prevState => ({
-				// 			userData: {
-				// 				...prevState.userData,
-				// 				entries: prevState.userData.entries + 1
-				// 			}
-				// 		}));
-				// 	}
-				// })
-				// .catch(err => {
-				// 	// insert fails
-				// })
-		},
-		(err) => {
-			// there was an error
-			this.setState({url: this.state.imageInput, box: []});
-			this.setState({error: 'badLink'});
-	    }
-		)
-		// image does not contain pictures
-		.catch(err => {
-			this.setState({url: this.state.imageInput, box: []});
-			this.setState({error: ''});
-		});		
+			// if we do not have faces in our response
+			} else {
+				this.setState({url: this.state.imageInput, box: []});
+				this.setState({error: ''});
+			}
+		})
 	}
 
 	render() {
